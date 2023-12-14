@@ -60,7 +60,7 @@ func load_game(p_name : String) -> bool:
 
 
 ## This method saves the current game-state to memory then quits to the main
-## menu. It's possible to restore the previous game state by calling 
+## menu. It's possible to restore the previous game state by calling
 ## [method load_world_state].
 func quit_game() -> bool:
 	# Save the world state to memory in case we want to resume
