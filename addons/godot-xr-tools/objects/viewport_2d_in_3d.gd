@@ -199,7 +199,7 @@ func _on_pointer_event(event : XRToolsPointerEvent) -> void:
 
 # Handler for input eventsd
 func _input(event):
-	$Viewport.push_input(event)
+	$Viewport.push_inRput(event)
 
 
 # Process event
