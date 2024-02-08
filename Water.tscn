@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://jhbcuxle4g48"]
+
+[ext_resource type="Shader" path="res://assets/water_stuff/WaterPlane.gdshader" id="1_ploxn"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_so1om"]
+lightmap_size_hint = Vector2i(7, 7)
+subdivide_width = 200
+subdivide_depth = 200
+orientation = 1
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2683m"]
+noise_type = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kyq77"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_2683m")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ejwlm"]
+noise_type = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eitl1"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_ejwlm")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bcyq4"]
+noise_type = 0
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tcybx"]
+seamless = true
+noise = SubResource("FastNoiseLite_bcyq4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_74rr0"]
+render_priority = 0
+shader = ExtResource("1_ploxn")
+shader_parameter/albedo = Color(0.054902, 0.411765, 0.843137, 1)
+shader_parameter/albedo2 = Color(0, 0.47451, 0.764706, 1)
+shader_parameter/metallic = 0.0
+shader_parameter/roughness = 0.02
+shader_parameter/wave_direction = Vector2(2, 0)
+shader_parameter/wave_direction2 = Vector2(0, 1)
+shader_parameter/time_scale = 0.025
+shader_parameter/noise_scale = 10.0
+shader_parameter/height_scale = 0.15
+shader_parameter/color_deep = Color(0, 0, 0, 1)
+shader_parameter/color_shallow = Color(0, 0, 0, 1)
+shader_parameter/beers_law = 2.0
+shader_parameter/depth_offset = -0.75
+shader_parameter/edge_scale = 0.1
+shader_parameter/near = 1.0
+shader_parameter/far = 100.0
+shader_parameter/edge_color = null
+shader_parameter/wave = SubResource("NoiseTexture2D_tcybx")
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_kyq77")
+shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_eitl1")
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11115, -0.001)
+mesh = SubResource("QuadMesh_so1om")
+surface_material_override/0 = SubResource("ShaderMaterial_74rr0")
