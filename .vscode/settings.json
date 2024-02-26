@@ -1,0 +1,13 @@
+{
+  "[gdscript]": {
+    "editor.defaultFormatter": "EddieDover.gdscript-formatter-linter",
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
+  },
+  "files.associations": {
+    "gdlintrc": "yaml"
+  },
+  "cSpell.words": ["elif", "onready", "spawnables", "teleporter", "tscn"],
+  "cSpell.enableFiletypes": ["gdscript"]
+}
