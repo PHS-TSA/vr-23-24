@@ -1,6 +1,5 @@
 extends PersistentWorld
 
-
 ## Game State Singleton
 ##
 ## This auto-load class can be used to hold game state information between
@@ -10,28 +9,20 @@ extends PersistentWorld
 ## The [GameStaging] script populates the staging and current_zone fields
 ## of this script in response to scene switching.
 
-
 ## Game difficulty options
-enum GameDifficulty {
-	GAME_EASY,
-	GAME_NORMAL,
-	GAME_HARD,
-	GAME_MAX
-}
-
+enum GameDifficulty { GAME_EASY, GAME_NORMAL, GAME_HARD, GAME_MAX }
 
 @export_group("Game Settings")
 
 ## This property sets the starting zone for the game
-@export var starting_zone : PersistentZoneInfo
+@export var starting_zone: PersistentZoneInfo
 
 ## This property sets the difficulty of the game.
-@export var game_difficulty : GameDifficulty = GameDifficulty.GAME_NORMAL:
+@export var game_difficulty: GameDifficulty = GameDifficulty.GAME_NORMAL:
 	set = _set_game_difficulty
 
-
 ## Current zone (when playing game)
-var current_zone : PersistentZone
+var current_zone: PersistentZone
 
 
 func _ready():
@@ -50,7 +41,7 @@ func new_game(difficulty := GameDifficulty.GAME_NORMAL) -> bool:
 
 
 ## This method loads a game from the specified save-game.
-func load_game(p_name : String) -> bool:
+func load_game(p_name: String) -> bool:
 	# Read data from the save-game file
 	if not load_file(p_name):
 		return false
@@ -60,7 +51,7 @@ func load_game(p_name : String) -> bool:
 
 
 ## This method saves the current game-state to memory then quits to the main
-## menu. It's possible to restore the previous game state by calling 
+## menu. It's possible to restore the previous game state by calling
 ## [method load_world_state].
 func quit_game() -> bool:
 	# Save the world state to memory in case we want to resume
@@ -83,11 +74,11 @@ func auto_save_game() -> bool:
 	if !auto_save_name:
 		# First time saving? Determine this name
 		var date = Time.get_datetime_dict_from_system()
-		auto_save_name = "auto_save_%d-%d-%d" % [ date["year"], date["month"], date["day"] ]
+		auto_save_name = "auto_save_%d-%d-%d" % [date["year"], date["month"], date["day"]]
 		set_value("auto_save_name", auto_save_name)
 
 	# Should give our auto save a nice summary...
-	var summary : String = auto_save_name
+	var summary: String = auto_save_name
 	return save_file(auto_save_name, summary)
 
 
@@ -142,9 +133,9 @@ func load_world_state() -> bool:
 
 
 # Handle changing the game difficulty
-func _set_game_difficulty(p_game_difficulty : GameDifficulty) -> void:
+func _set_game_difficulty(p_game_difficulty: GameDifficulty) -> void:
 	if p_game_difficulty < 0 or p_game_difficulty >= GameDifficulty.GAME_MAX:
-		push_warning("Difficulty %d is out of bounds" % [ p_game_difficulty ])
+		push_warning("Difficulty %d is out of bounds" % [p_game_difficulty])
 		return
 
 	game_difficulty = p_game_difficulty

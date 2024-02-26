@@ -1,7 +1,6 @@
 class_name PersistentWorld
 extends Node
 
-
 ## Persistent World Data Object
 ##
 ## The [PersistentWorld] object holds information about the world. This
@@ -13,7 +12,6 @@ extends Node
 ##
 ## Multiple instances of [PersistentWorld] objects can be created - for example
 ## to inspect other saved games without affecting the main instance.
-
 
 ## Signal invoked before loading world-data
 signal world_loading
@@ -27,18 +25,16 @@ signal world_saving
 ## Signal invoked after saving world-data
 signal world_saved
 
-
 @export_group("Persistence Settings")
 
 ## Password for encrypted save files
 @export var save_file_password := ""
 
 ## Database of all persistent zones in the game
-@export var zone_database : PersistentZoneDatabase
+@export var zone_database: PersistentZoneDatabase
 
 ## Database of all persistent item types in the game
-@export var item_database : PersistentItemDatabase
-
+@export var item_database: PersistentItemDatabase
 
 # World data dictionary
 var _data := {}
@@ -46,9 +42,8 @@ var _data := {}
 # Mutex protecting data
 var _mutex := Mutex.new()
 
-
 ## Static instance of the world data
-static var instance : PersistentWorld = null
+static var instance: PersistentWorld = null
 
 
 # Check for configuration issues on this node
@@ -71,16 +66,15 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return warnings
 
 
-
 ## This method creates a unique ID starting with [param base] follwed by a
 ## random number. The [param value] is stored using this ID, and the ID is
 ## returned to the caller.
-func set_unique(base : String, value : Variant) -> String:
+func set_unique(base: String, value: Variant) -> String:
 	# Lock while trying to create the ID
 	_mutex.lock()
 
 	# Loop generating random IDs until we find a free one
-	var id : String
+	var id: String
 	while true:
 		id = base + str(randi() % 999999)
 		if not _data.has(id):
@@ -93,7 +87,7 @@ func set_unique(base : String, value : Variant) -> String:
 
 
 ## This method saves the [param value] under the [param id].
-func set_value(id : String, value : Variant) -> void:
+func set_value(id: String, value: Variant) -> void:
 	_mutex.lock()
 	_data[id] = value
 	_mutex.unlock()
@@ -101,7 +95,7 @@ func set_value(id : String, value : Variant) -> void:
 
 ## This method gets the value stored under the [param id]. If the [param id]
 ## does not exist then the [param default] value is returned.
-func get_value(id : String, default : Variant = null): # -> Variant
+func get_value(id: String, default: Variant = null):  # -> Variant
 	_mutex.lock()
 	var value = _data.get(id, default)
 	_mutex.unlock()
@@ -109,7 +103,7 @@ func get_value(id : String, default : Variant = null): # -> Variant
 
 
 ## This method clears a value under the [param id].
-func clear_value(id : String) -> void:
+func clear_value(id: String) -> void:
 	_mutex.lock()
 	_data.erase(id)
 	_mutex.unlock()
@@ -117,10 +111,10 @@ func clear_value(id : String) -> void:
 
 ## This method clears all values matching the glob [param pattern]. See
 ## [method String.match] for pattern matching rules.
-func clear_matching(pattern : String) -> void:
+func clear_matching(pattern: String) -> void:
 	_mutex.lock()
 	for _key in _data.keys():
-		var key : String = _key
+		var key: String = _key
 		if key.match(pattern):
 			_data.erase(key)
 	_mutex.unlock()
@@ -136,7 +130,7 @@ func clear_all() -> void:
 ## This method loads the summary information for the saved world-data
 ## associated with the specified [param file_name]. If the world-data does
 ## not exist then this method returns null.
-func load_summary(file_name : String) -> Variant:
+func load_summary(file_name: String) -> Variant:
 	# Open the world-data save file for reading
 	var file := _open_file(file_name, FileAccess.READ)
 	if not file:
@@ -153,7 +147,7 @@ func load_summary(file_name : String) -> Variant:
 ## This method loads the world-data associated with the specified
 ## [param file_name]. If the world-data does not exist or is invalid then
 ## this method returns false.
-func load_file(file_name : String) -> bool:
+func load_file(file_name: String) -> bool:
 	# Report start of world-data loading
 	world_loading.emit()
 
@@ -188,7 +182,7 @@ func load_file(file_name : String) -> bool:
 ## This method saves the world-data under the specified [param file_name].
 ## If the  save fails then this method returns false. The [param file_name]
 ## string must be a legal part of a file name.
-func save_file(file_name : String, summary : Variant) -> bool:
+func save_file(file_name: String, summary: Variant) -> bool:
 	# Report start of world-data saving
 	world_saving.emit()
 
@@ -216,7 +210,7 @@ func save_file(file_name : String, summary : Variant) -> bool:
 ## This method deletes the world-data associated with the specified
 ## [param file_name]. If the world-data does not exist then this method
 ## returns false.
-static func delete_file(file_name : String) -> bool:
+static func delete_file(file_name: String) -> bool:
 	# Construct the file name
 	var file_path := "user://save_%s.data" % file_name
 
@@ -228,7 +222,7 @@ static func delete_file(file_name : String) -> bool:
 ## instances.
 func list_saves() -> Array[String]:
 	# Construct the return list
-	var ret : Array[String] = []
+	var ret: Array[String] = []
 
 	# Build a regular expression to match save file names
 	var regex := RegEx.new()
@@ -245,7 +239,7 @@ func list_saves() -> Array[String]:
 
 
 # Open a world-data save file.
-func _open_file(file_name : String, mode : FileAccess.ModeFlags) -> FileAccess:
+func _open_file(file_name: String, mode: FileAccess.ModeFlags) -> FileAccess:
 	# Construct the file name
 	var file_path := "user://save_%s.data" % file_name
 

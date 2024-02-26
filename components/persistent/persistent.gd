@@ -1,10 +1,8 @@
 class_name Persistent
 
-
 ## Persistent script
 ##
 ## This script defines constants used in the persistence system.
-
 
 ## Notification to trigger loading state
 const NOTIFICATION_LOAD_STATE := 57001

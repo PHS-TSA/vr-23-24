@@ -1,12 +1,11 @@
 @tool
 extends Area3D
 
-
 ## Zone scene file
-@export_file('*.tscn') var zone_scene : String = ""
+@export_file("*.tscn") var zone_scene: String = ""
 
 ## If true the zone switcher is enabled
-@export var enabled : bool = true
+@export var enabled: bool = true
 
 ## Name of the spawn-point node name in the target scene
 @export var spawn_node_name := ""
@@ -18,7 +17,7 @@ func _ready():
 
 
 # Called when a body enters this area
-func _on_body_entered(body : Node3D):
+func _on_body_entered(body: Node3D):
 	# Ignore if not enabled
 	if not enabled:
 		return
@@ -28,7 +27,7 @@ func _on_body_entered(body : Node3D):
 		return
 
 	# Find our scene base
-	var scene_base : XRToolsSceneBase = XRTools.find_xr_ancestor(self, "*", "XRToolsSceneBase")
+	var scene_base: XRToolsSceneBase = XRTools.find_xr_ancestor(self, "*", "XRToolsSceneBase")
 	if not scene_base:
 		return
 

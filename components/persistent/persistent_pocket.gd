@@ -2,7 +2,6 @@
 class_name PersistentPocket
 extends XRToolsSnapZone
 
-
 ## Persistent Pocket Node
 ##
 ## The [PersistentPocket] type holds persistent items managed by the
@@ -10,34 +9,35 @@ extends XRToolsSnapZone
 ## [XRToolsSnapZone] to allow [PersistentItem] objects to be snapped or
 ## removed by the player.
 
-
 ## Enumeration to control pocket behavior when the parent item is held
 enum HeldBehavior {
-	IGNORE,		## Ignore picked_up/dropped changes
-	ENABLE,		## Enable when picked up
-	DISABLE		## Disable when picked up
+	## Ignore picked_up/dropped changes
+	IGNORE,
+	## Enable when picked up
+	ENABLE,
+	## Disable when picked up
+	DISABLE
 }
-
 
 # Group for world-data properties
 @export_group("World Data")
 
 ## This property specifies the unique ID of this pocket
-@export var pocket_id : String
+@export var pocket_id: String
 
 # Group for options
 @export_group("Options")
 
 ## Pocket behavior when held
-@export var held_behavior := HeldBehavior.ENABLE : set = _set_held_behavior
-
+@export var held_behavior := HeldBehavior.ENABLE:
+	set = _set_held_behavior
 
 # Parent pickable body
-var _parent_body : XRToolsPickable
+var _parent_body: XRToolsPickable
 
 
 # Add support for is_xr_class
-func is_xr_class(p_name : String) -> bool:
+func is_xr_class(p_name: String) -> bool:
 	return p_name == "PersistentPocket" or super(p_name)
 
 
@@ -76,7 +76,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 # Handle notifications
-func _notification(what : int) -> void:
+func _notification(what: int) -> void:
 	# Ignore notifications on freeing objects
 	if is_queued_for_deletion():
 		return
@@ -110,7 +110,7 @@ func _save_state() -> void:
 		return
 
 	# Get the item_id of the PersistentItem in the pocket
-	var item_id : String = picked_up_object.item_id
+	var item_id: String = picked_up_object.item_id
 
 	# Save that the pocket holds the item
 	PersistentWorld.instance.set_value(pocket_id, item_id)
@@ -154,7 +154,7 @@ func _on_dropped(_pickable) -> void:
 
 
 # Called when the held_behavior property has been modified
-func _set_held_behavior(p_held_behavior : HeldBehavior) -> void:
+func _set_held_behavior(p_held_behavior: HeldBehavior) -> void:
 	held_behavior = p_held_behavior
 	if is_inside_tree() and _parent_body:
 		_update_held_behavior()

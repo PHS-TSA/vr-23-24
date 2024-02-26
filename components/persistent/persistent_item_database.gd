@@ -1,17 +1,15 @@
 class_name PersistentItemDatabase
 extends Resource
 
-
 ## Persistent Item Database Resource
 ##
 ## This resource defines all [PersistentItemType] items supported by the
 ## persistence system. The [PersistentZone] classe use this resource when
 ## creating [PersistentItem] instances.
 
-
 ## This property is the array of supported persistent item types
-@export var items : Array[PersistentItemType] : set = _set_items
-
+@export var items: Array[PersistentItemType]:
+	set = _set_items
 
 # Items cache
 var _cache := {}
@@ -22,7 +20,7 @@ var _cache_valid := false
 
 ## This method gets a [PersistentItemType] given its [param type_id]. If no
 ## corresponding [PersistentItemType] is found then this function returns null.
-func get_type(type_id : String) -> PersistentItemType:
+func get_type(type_id: String) -> PersistentItemType:
 	# Populate the cache if necessary
 	if not _cache_valid:
 		_populate_cache()
@@ -31,7 +29,7 @@ func get_type(type_id : String) -> PersistentItemType:
 
 
 # Handle setting the items
-func _set_items(p_items : Array[PersistentItemType]) -> void:
+func _set_items(p_items: Array[PersistentItemType]) -> void:
 	# Save the new items
 	items = p_items
 

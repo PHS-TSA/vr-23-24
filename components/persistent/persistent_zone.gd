@@ -2,23 +2,21 @@
 class_name PersistentZone
 extends XRToolsSceneBase
 
-
 ## Persistent Zone Node
 ##
 ## The [PersistentNode] class is an extension of [XRToolsSceneBase] which
 ## manages the state of the zones [PersistentItem] objects through the
 ## persistence system.
 
-
 # Group for world-data properties
 @export_group("World Data")
 
 ## This property specifies the persistent zone information
-@export var zone_info : PersistentZoneInfo
+@export var zone_info: PersistentZoneInfo
 
 
 # Add support for is_xr_class
-func is_xr_class(p_name : String) -> bool:
+func is_xr_class(p_name: String) -> bool:
 	return p_name == "PersistentZone" or super(p_name)
 
 
@@ -60,7 +58,7 @@ func scene_loaded(user_data = null):
 	if zone_items is Array:
 		for item_id in items_in_zone:
 			if not zone_items.has(item_id):
-				var item : PersistentItem = items_in_zone[item_id]
+				var item: PersistentItem = items_in_zone[item_id]
 				item.get_parent().remove_child(item)
 				item.queue_free()
 
@@ -112,7 +110,7 @@ func save_world_state() -> void:
 	propagate_notification(Persistent.NOTIFICATION_SAVE_STATE)
 
 	# Identify items held directly by the zone
-	var items_in_zone : Array[String] = []
+	var items_in_zone: Array[String] = []
 	for node in get_tree().get_nodes_in_group("persistent"):
 		if is_item_held_by_zone(node):
 			items_in_zone.append(node.item_id)
@@ -142,17 +140,14 @@ func save_world_state() -> void:
 
 
 ## Find the [PersistentZone] containing a given node
-static func find_instance(node : Node) -> PersistentZone:
-	return XRTools.find_xr_ancestor(
-		node,
-		"*",
-		"PersistentZone") as PersistentZone
+static func find_instance(node: Node) -> PersistentZone:
+	return XRTools.find_xr_ancestor(node, "*", "PersistentZone") as PersistentZone
 
 
 # Create a [PersistentItem] from its [param item_id]. This is used when
 # loading a scene that contains an item carried by the user from a different
 # scene.
-func create_item_instance(item_id : String) -> PersistentItem:
+func create_item_instance(item_id: String) -> PersistentItem:
 	# Get the items state information
 	var state = PersistentWorld.instance.get_value(item_id)
 	if not state is Dictionary:
@@ -172,13 +167,13 @@ func create_item_instance(item_id : String) -> PersistentItem:
 		return null
 
 	# Load the item scene
-	var item_scene : PackedScene = load(item_type.instance_scene)
+	var item_scene: PackedScene = load(item_type.instance_scene)
 	if not item_scene:
 		push_warning("Item scene %s not valid" % item_type.instance_scene)
 		return null
 
 	# Construct the item
-	var item : PersistentItem = item_scene.instantiate()
+	var item: PersistentItem = item_scene.instantiate()
 	if not item:
 		push_warning("Item scene %s not valid" % item_type.instance_scene)
 		return null
@@ -194,7 +189,7 @@ func create_item_instance(item_id : String) -> PersistentItem:
 # This method returns true if the node is an item held by a zone rather than
 # being held by some sort of persistent object such as a PersistentPocket or
 # an XRToolsFunctionPickup.
-static func is_item_held_by_zone(node : Node) -> bool:
+static func is_item_held_by_zone(node: Node) -> bool:
 	# Skip if not valid
 	if not is_instance_valid(node):
 		return false
@@ -221,7 +216,7 @@ static func is_item_held_by_zone(node : Node) -> bool:
 
 
 # This method returns the persistent item primarily held by the pickup
-static func _get_held_persistent_item(pickup : XRToolsFunctionPickup) -> PersistentItem:
+static func _get_held_persistent_item(pickup: XRToolsFunctionPickup) -> PersistentItem:
 	# Fail if no pickup
 	if not is_instance_valid(pickup):
 		return null

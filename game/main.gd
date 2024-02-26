@@ -2,7 +2,6 @@
 class_name GameStaging
 extends PersistentStaging
 
-
 ## Game Staging Script
 ##
 ## This script registers the staging instance with the [GameState] singleton
@@ -24,7 +23,7 @@ func _ready():
 
 
 # This method is called when a scene is loaded
-func _on_scene_loaded(_scene : XRToolsSceneBase, _user_data : Variant) -> void:
+func _on_scene_loaded(_scene: XRToolsSceneBase, _user_data: Variant) -> void:
 	# Clear the continue prompt
 	prompt_for_continue = false
 

@@ -2,13 +2,12 @@
 class_name PersistentStaging
 extends XRToolsStaging
 
-
 ## Persistent Staging instance
-static var instance : PersistentStaging
+static var instance: PersistentStaging
 
 
 # Add support for is_xr_class on XRTools classes
-func is_xr_class(p_name : String) -> bool:
+func is_xr_class(p_name: String) -> bool:
 	return p_name == "PersistentStaging"
 
 

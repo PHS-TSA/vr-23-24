@@ -2,7 +2,6 @@
 class_name PersistentItem
 extends XRToolsPickable
 
-
 ## Persistent Item Instance Node
 ##
 ## The [PersistentItem] type is for instances of items managed by the
@@ -20,15 +19,14 @@ extends XRToolsPickable
 ## persisted to the [PersistentWorld] store by overriding the
 ## [method _load_world_state] and [method _save_world_state] methods.
 
-
 # Group for world-data properties
 @export_group("World Data")
 
 ## This property specifies the unique ID (or base ID) for this item
-@export var item_id : String
+@export var item_id: String
 
 ## This property specifies the [PersistentItemType] of this item
-@export var item_type : PersistentItemType
+@export var item_type: PersistentItemType
 
 ## This property indicates whether this object was dynamically created
 @export var item_dynamic := false
@@ -42,19 +40,18 @@ extends XRToolsPickable
 ## Timeout for auto-return
 @export var auto_return_timeout := 2.0
 
-
 # Destroyed flag
 var _destroyed := false
 
 # Last pocket this object was in
-var _last_pocket : PersistentPocket
+var _last_pocket: PersistentPocket
 
 # Auto-return timer node
-var _auto_return_timer : Timer
+var _auto_return_timer: Timer
 
 
 # Add support for is_xr_class
-func is_xr_class(p_name : String) -> bool:
+func is_xr_class(p_name: String) -> bool:
 	return p_name == "PersistentItem" or super(p_name)
 
 
@@ -88,7 +85,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 # Handle notifications
-func _notification(what : int) -> void:
+func _notification(what: int) -> void:
 	# Ignore notifications on freeing objects
 	if is_queued_for_deletion():
 		return
@@ -141,7 +138,7 @@ func _save_state() -> void:
 			return
 
 		# Design-time items must be saved with the destroyed state
-		PersistentWorld.instance.set_value(item_id, { destroyed = true })
+		PersistentWorld.instance.set_value(item_id, {destroyed = true})
 		return
 
 	# Populate the state information
@@ -167,7 +164,7 @@ func _destroy() -> void:
 ## [PersistentItem] can override this method to load additional item state by
 ## calling super() to load the basic information and then reading additional
 ## state information from the dictionary.
-func _load_world_state(state : Dictionary) -> void:
+func _load_world_state(state: Dictionary) -> void:
 	# Restore the location
 	var location = state.get("location")
 	if location is Transform3D:
@@ -179,7 +176,7 @@ func _load_world_state(state : Dictionary) -> void:
 ## [PersistentItem] can override this method to save additional item state by
 ## calling super() to save the basic information and then writing additional
 ## state information to the dictionary.
-func _save_world_state(state : Dictionary) -> void:
+func _save_world_state(state: Dictionary) -> void:
 	# Save the type and location
 	state["type"] = item_type.type_id
 	state["location"] = global_transform
