@@ -1,5 +1,5 @@
 ---
-name: CI/CD
+name: CI
 
 on:
   push:
@@ -21,49 +21,6 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    needs: []
-    timeout-minutes: ${{ (matrix.target == 'web') && 5 || 10 }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - quest
-        include:
-          - target: quest
-            os: ubuntu-latest
-            godot-flags: --export-release "Meta Quest" build/index.html
-
-    steps:
-      - name: 📚 Git checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        with:
-          submodules: recursive
-          clean: true
-          persist-credentials: false
-          set-safe-directory: true
-      - name: 🤖 Set up Godot
-        uses: chickensoft-games/setup-godot@d3fbddfbafb76fbce64d878aa3d31090e5d0fe0c # v1.5.6
-        with:
-          version: ${{ env.GODOT_VERSION }}
-          use-dotnet: false
-      - name: 🔬 Verify setup
-        run: godot --version
-      - name: 🔌 Make and delete directories
-        run: mkdir build/ && rm -rf addons/{godot-git-plugin,wakatime}
-      - name: 🔧 Build
-        run: godot --headless ${{ matrix.godot-flags }}
-      - name: ⚙️ Upload build
-        if: matrix.target == 'quest'
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
-        with:
-          name: build-${{ matrix.target }}
-          path: "./build"
-          if-no-files-found: error
-
   lint:
     name: Linting
     needs: []
