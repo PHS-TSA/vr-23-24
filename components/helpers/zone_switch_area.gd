@@ -12,12 +12,12 @@ extends Area3D
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	connect("body_entered", Callable(self, "_on_body_entered"))
+func _ready() -> void:
+	var _connection_err := body_entered.connect(_on_body_entered)
 
 
 # Called when a body enters this area
-func _on_body_entered(body: Node3D):
+func _on_body_entered(body: Node3D) -> void:
 	# Ignore if not enabled
 	if not enabled:
 		return

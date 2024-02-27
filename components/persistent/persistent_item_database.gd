@@ -9,7 +9,13 @@ extends Resource
 
 ## This property is the array of supported persistent item types
 @export var items: Array[PersistentItemType]:
-	set = _set_items
+	# Handle setting the items
+	set(p_items):
+		# Save the new items
+		items = p_items
+
+		# Invalidate the cache
+		_cache_valid = false
 
 # Items cache
 var _cache := {}
@@ -26,15 +32,6 @@ func get_type(type_id: String) -> PersistentItemType:
 		_populate_cache()
 
 	return _cache.get(type_id)
-
-
-# Handle setting the items
-func _set_items(p_items: Array[PersistentItemType]) -> void:
-	# Save the new items
-	items = p_items
-
-	# Invalidate the cache
-	_cache_valid = false
 
 
 # Populate the type cache

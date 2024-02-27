@@ -8,62 +8,47 @@ extends Node3D
 ## random locations.
 
 @export var extend: Vector3 = Vector3(1.0, 0.0, 1.0):
-	set = set_extend
+	set(new_value):
+		extend = new_value
+		_set_dirty()
+
 @export var instance_count: int = 10:
-	set = set_instance_count
+	set(new_value):
+		instance_count = new_value
+		_set_dirty()
+
 @export var min_scale: float = 1.0:
-	set = set_min_scale
+	set(new_value):
+		min_scale = new_value
+		_set_dirty()
 @export var max_scale: float = 1.0:
-	set = set_max_scale
+	set(new_value):
+		max_scale = new_value
+		_set_dirty()
 @export var mesh: Mesh:
-	set = set_mesh
+	set(new_mesh):
+		mesh = new_mesh
+		if multi_mesh:
+			multi_mesh.mesh = mesh
+
 @export var material_override: Material:
-	set = set_material_override
+	set(new_material):
+		material_override = new_material
+		if multi_mesh_instance:
+			multi_mesh_instance.material_override = material_override
 
 var dirty: bool = true
 var multi_mesh: MultiMesh
 var multi_mesh_instance: MultiMeshInstance3D
 
 
-func set_extend(new_value):
-	extend = new_value
-	_set_dirty()
-
-
-func set_instance_count(new_value):
-	instance_count = new_value
-	_set_dirty()
-
-
-func set_min_scale(new_value):
-	min_scale = new_value
-	_set_dirty()
-
-
-func set_max_scale(new_value):
-	max_scale = new_value
-	_set_dirty()
-
-
-func set_mesh(new_mesh):
-	mesh = new_mesh
-	if multi_mesh:
-		multi_mesh.mesh = mesh
-
-
-func set_material_override(new_material):
-	material_override = new_material
-	if multi_mesh_instance:
-		multi_mesh_instance.material_override = material_override
-
-
-func _set_dirty():
+func _set_dirty() -> void:
 	if !dirty:
 		dirty = true
-		call_deferred("_update_multimesh")
+		_update_multimesh.call_deferred()
 
 
-func _update_multimesh():
+func _update_multimesh() -> void:
 	if !dirty:
 		return
 
@@ -83,7 +68,7 @@ func _update_multimesh():
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	multi_mesh = MultiMesh.new()
 	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
 	multi_mesh.mesh = mesh

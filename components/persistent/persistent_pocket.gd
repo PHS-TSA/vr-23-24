@@ -30,7 +30,11 @@ enum HeldBehavior {
 
 ## Pocket behavior when held
 @export var held_behavior := HeldBehavior.ENABLE:
-	set = _set_held_behavior
+	# Called when the held_behavior property has been modified
+	set(p_held_behavior):
+		held_behavior = p_held_behavior
+		if is_inside_tree() and _parent_body:
+			_update_held_behavior()
 
 # Parent pickable body
 var _parent_body: XRToolsPickable
@@ -42,7 +46,7 @@ func is_xr_class(p_name: String) -> bool:
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	super()
 
 	# Skip initialization if in editor
@@ -52,8 +56,8 @@ func _ready():
 	# Search for an ancestor XRToolsPickable
 	_parent_body = XRTools.find_xr_ancestor(self, "*", "XRToolsPickable")
 	if _parent_body:
-		_parent_body.picked_up.connect(_on_picked_up)
-		_parent_body.dropped.connect(_on_dropped)
+		var _connection_err := _parent_body.picked_up.connect(_on_picked_up)
+		var _connection_err2 := _parent_body.dropped.connect(_on_dropped)
 
 	# Update the held behavior
 	_update_held_behavior()
@@ -65,11 +69,11 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	# Verify pocket ID is set
 	if not pocket_id:
-		warnings.append("Pocket ID not zet")
+		var _did_append := warnings.append("Pocket ID not zet")
 
 	# Verify pocket is in persistent group
 	if not is_in_group("persistent"):
-		warnings.append("Pocket not in 'persistent' group")
+		var _did_append := warnings.append("Pocket not in 'persistent' group")
 
 	# Return warnings
 	return warnings
@@ -108,9 +112,10 @@ func _save_state() -> void:
 		# Save that the pocket is empty
 		PersistentWorld.instance.clear_value(pocket_id)
 		return
+	var persistent_picked_up_object: PersistentItem = picked_up_object
 
 	# Get the item_id of the PersistentItem in the pocket
-	var item_id: String = picked_up_object.item_id
+	var item_id := persistent_picked_up_object.item_id
 
 	# Save that the pocket holds the item
 	PersistentWorld.instance.set_value(pocket_id, item_id)
@@ -128,12 +133,13 @@ func _destroy() -> void:
 # Populate the contents of a pocket
 func _populate_pocket() -> void:
 	# Get the ID of the item in the pocket
-	var item_id = PersistentWorld.instance.get_value(pocket_id)
-	if not item_id is String:
+	var _item_id: Variant = PersistentWorld.instance.get_value(pocket_id)
+	if not _item_id is String:
 		return
+	var item_id: String = _item_id
 
 	# Construct the item for the pocket
-	var zone = PersistentZone.find_instance(self)
+	var zone := PersistentZone.find_instance(self)
 	var item := zone.create_item_instance(item_id)
 	if not item:
 		return
@@ -144,20 +150,13 @@ func _populate_pocket() -> void:
 
 
 # Called when the parent pickable body is picked up
-func _on_picked_up(_pickable) -> void:
+func _on_picked_up(_pickable: XRToolsPickable) -> void:
 	_update_held_behavior()
 
 
 # Called when the parent pickable body is dropped
-func _on_dropped(_pickable) -> void:
+func _on_dropped(_pickable: XRToolsPickable) -> void:
 	_update_held_behavior()
-
-
-# Called when the held_behavior property has been modified
-func _set_held_behavior(p_held_behavior: HeldBehavior) -> void:
-	held_behavior = p_held_behavior
-	if is_inside_tree() and _parent_body:
-		_update_held_behavior()
 
 
 # Update the pocket enable

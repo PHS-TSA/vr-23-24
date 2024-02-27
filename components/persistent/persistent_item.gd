@@ -56,12 +56,12 @@ func is_xr_class(p_name: String) -> bool:
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	super()
 
 	# Subscribe to picked_up and dropped signals
-	picked_up.connect(_on_picked_up)
-	dropped.connect(_on_dropped)
+	var _connection_err := picked_up.connect(_on_picked_up)
+	var _connection_err2 := dropped.connect(_on_dropped)
 
 
 # Get configuration warnings
@@ -70,15 +70,15 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	# Verify item ID is set
 	if not item_id:
-		warnings.append("PersistentItem ID not zet")
+		var _did_append := warnings.append("PersistentItem ID not zet")
 
 	# Verify the item type is set
 	if not item_type:
-		warnings.append("PersistentItem Type not set")
+		var _did_append := warnings.append("PersistentItem Type not set")
 
 	# Verify item is in persistent group
 	if not is_in_group("persistent"):
-		warnings.append("PersistentItem not in 'persistent' group")
+		var _did_append := warnings.append("PersistentItem not in 'persistent' group")
 
 	# Return warnings
 	return warnings
@@ -102,7 +102,7 @@ func _notification(what: int) -> void:
 
 
 ## This method is called when the [PersistentItem] is dropped and freed
-func drop_and_free():
+func drop_and_free() -> void:
 	super()
 
 	# Propagate destruction to this node and all children
@@ -114,17 +114,17 @@ func drop_and_free():
 # and all children for destruction, otherwise it restores the items state.
 func _load_state() -> void:
 	# Restore the item state
-	var state = PersistentWorld.instance.get_value(item_id)
-	if not state is Dictionary:
-		return
+	var state: Variant = PersistentWorld.instance.get_value(item_id)
+	if state is Dictionary:
+		var dict_state: Dictionary = state
 
-	# If the item is recorded as having been destroyed then destroy it
-	if state.get("destroyed", false):
-		propagate_notification(Persistent.NOTIFICATION_DESTROY)
-		return
+		# If the item is recorded as having been destroyed then destroy it
+		if dict_state.get("destroyed", false):
+			propagate_notification(Persistent.NOTIFICATION_DESTROY)
+			return
 
-	# Restore the item state
-	_load_world_state(state)
+		# Restore the item state
+		_load_world_state(dict_state)
 
 
 # This method saves the state of the item to [PersistentWorld]. If the item
@@ -166,9 +166,10 @@ func _destroy() -> void:
 ## state information from the dictionary.
 func _load_world_state(state: Dictionary) -> void:
 	# Restore the location
-	var location = state.get("location")
+	var location: Variant = state.get("location")
 	if location is Transform3D:
-		global_transform = location
+		var loc: Transform3D = location
+		global_transform = loc
 
 
 ## This method saves item state to the [param state] world data. The base
@@ -188,7 +189,7 @@ func _start_auto_return_timer() -> void:
 	if not _auto_return_timer:
 		_auto_return_timer = Timer.new()
 		_auto_return_timer.one_shot = true
-		_auto_return_timer.timeout.connect(_on_auto_return)
+		var _connection_err := _auto_return_timer.timeout.connect(_on_auto_return)
 		add_child(_auto_return_timer)
 
 	# Start the auto-return timer
@@ -196,7 +197,7 @@ func _start_auto_return_timer() -> void:
 
 
 # Called when this object is picked up
-func _on_picked_up(_pickable) -> void:
+func _on_picked_up(_pickable: XRToolsPickable) -> void:
 	# Save the last pocket
 	if get_picked_up_by() is PersistentPocket:
 		_last_pocket = get_picked_up_by()
@@ -207,7 +208,7 @@ func _on_picked_up(_pickable) -> void:
 
 
 # Called when this object is dropped
-func _on_dropped(_pickable) -> void:
+func _on_dropped(_pickable: XRToolsPickable) -> void:
 	# Start the auto-return timer if possible
 	if auto_return and _last_pocket:
 		_start_auto_return_timer()

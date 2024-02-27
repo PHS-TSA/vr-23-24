@@ -52,15 +52,15 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	# Check for blank password
 	if save_file_password == "":
-		warnings.append("Save password not set - saves will be unencrypted")
+		var _did_append := warnings.append("Save password not set - saves will be unencrypted")
 
 	# Check for zone database
 	if not zone_database:
-		warnings.append("Zone database not set")
+		var _did_append := warnings.append("Zone database not set")
 
 	# Check for item database
 	if not item_database:
-		warnings.append("Item database not set")
+		var _did_append := warnings.append("Item database not set")
 
 	# Return warnings
 	return warnings
@@ -95,9 +95,9 @@ func set_value(id: String, value: Variant) -> void:
 
 ## This method gets the value stored under the [param id]. If the [param id]
 ## does not exist then the [param default] value is returned.
-func get_value(id: String, default: Variant = null):  # -> Variant
+func get_value(id: String, default: Variant = null) -> Variant:
 	_mutex.lock()
-	var value = _data.get(id, default)
+	var value: Variant = _data.get(id, default)
 	_mutex.unlock()
 	return value
 
@@ -105,7 +105,7 @@ func get_value(id: String, default: Variant = null):  # -> Variant
 ## This method clears a value under the [param id].
 func clear_value(id: String) -> void:
 	_mutex.lock()
-	_data.erase(id)
+	var _existed := _data.erase(id)
 	_mutex.unlock()
 
 
@@ -113,10 +113,9 @@ func clear_value(id: String) -> void:
 ## [method String.match] for pattern matching rules.
 func clear_matching(pattern: String) -> void:
 	_mutex.lock()
-	for _key in _data.keys():
-		var key: String = _key
+	for key: String in _data.keys():
 		if key.match(pattern):
-			_data.erase(key)
+			var _existed := _data.erase(key)
 	_mutex.unlock()
 
 
@@ -137,7 +136,7 @@ func load_summary(file_name: String) -> Variant:
 		return null
 
 	# Read the summary
-	var summary = file.get_var()
+	var summary: Variant = file.get_var()
 	file.close()
 
 	# Return the summary
@@ -160,7 +159,7 @@ func load_file(file_name: String) -> bool:
 	file.get_var()
 
 	# Read the data
-	var new_data = file.get_var()
+	var new_data: Variant = file.get_var()
 	file.close()
 
 	# Skip if not dictionary
@@ -226,7 +225,7 @@ func list_saves() -> Array[String]:
 
 	# Build a regular expression to match save file names
 	var regex := RegEx.new()
-	regex.compile("^save_(?<name>.*)\\.data$")
+	var _did_compile := regex.compile("^save_(?<name>.*)\\.data$")
 
 	# Process all files in the user folder
 	for file in DirAccess.get_files_at("user://"):

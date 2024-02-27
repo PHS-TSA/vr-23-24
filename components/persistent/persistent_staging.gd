@@ -12,7 +12,7 @@ func is_xr_class(p_name: String) -> bool:
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	super()
 
 	# Register ourselves as the persistent stage instances

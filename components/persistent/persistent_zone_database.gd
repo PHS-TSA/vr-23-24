@@ -8,7 +8,13 @@ extends Resource
 
 ## This property is the array of supported zones
 @export var zones: Array[PersistentZoneInfo]:
-	set = _set_zones
+	# Handle setting the items
+	set(p_zones):
+		# Save the new items
+		zones = p_zones
+
+		# Invalidate the cache
+		_cache_valid = false
 
 # Items cache
 var _cache := {}
@@ -25,15 +31,6 @@ func get_zone(zone_id: String) -> PersistentZoneInfo:
 		_populate_cache()
 
 	return _cache.get(zone_id)
-
-
-# Handle setting the items
-func _set_zones(p_zones: Array[PersistentZoneInfo]) -> void:
-	# Save the new items
-	zones = p_zones
-
-	# Invalidate the cache
-	_cache_valid = false
 
 
 # Populate the type cache

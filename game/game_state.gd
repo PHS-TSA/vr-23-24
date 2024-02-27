@@ -19,13 +19,19 @@ enum GameDifficulty { GAME_EASY, GAME_NORMAL, GAME_HARD, GAME_MAX }
 
 ## This property sets the difficulty of the game.
 @export var game_difficulty: GameDifficulty = GameDifficulty.GAME_NORMAL:
-	set = _set_game_difficulty
+	# Handle changing the game difficulty
+	set(p_game_difficulty):
+		if p_game_difficulty < 0 or p_game_difficulty >= GameDifficulty.GAME_MAX:
+			push_warning("Difficulty %d is out of bounds" % [p_game_difficulty])
+			return
+		game_difficulty = p_game_difficulty
+		set_value("game_difficulty", game_difficulty)
 
 ## Current zone (when playing game)
 var current_zone: PersistentZone
 
 
-func _ready():
+func _ready() -> void:
 	# Use this game state as the global world state
 	instance = self
 
@@ -70,10 +76,10 @@ func auto_save_game() -> bool:
 		return false
 
 	# Get auto save name
-	var auto_save_name = get_value("auto_save_name")
+	var auto_save_name: String = get_value("auto_save_name")
 	if !auto_save_name:
 		# First time saving? Determine this name
-		var date = Time.get_datetime_dict_from_system()
+		var date := Time.get_datetime_dict_from_system()
 		auto_save_name = "auto_save_%d-%d-%d" % [date["year"], date["month"], date["day"]]
 		set_value("auto_save_name", auto_save_name)
 
@@ -108,16 +114,18 @@ func load_world_state() -> bool:
 		return false
 
 	# Get the zone ID
-	var zone_id = get_value("current_zone_id")
-	if not zone_id is String:
+	var _zone_id: Variant = get_value("current_zone_id")
+	if not _zone_id is String:
 		# Default to the starting zone
-		zone_id = starting_zone.zone_id
+		_zone_id = starting_zone.zone_id
+	var zone_id: String = _zone_id
 
 	# Get the location
-	var location = get_value("current_location")
-	if not location is Transform3D:
+	var _location: Variant = get_value("current_location")
+	if not _location is Transform3D:
 		# Default to null (spawn location in level)
-		location = null
+		_location = null
+	var location: Transform3D = _location
 
 	# Restore the game difficulty
 	game_difficulty = get_value("game_difficulty")
@@ -130,13 +138,3 @@ func load_world_state() -> bool:
 	# Start transition to scene
 	PersistentStaging.instance.load_scene(zone.instance_scene, location)
 	return true
-
-
-# Handle changing the game difficulty
-func _set_game_difficulty(p_game_difficulty: GameDifficulty) -> void:
-	if p_game_difficulty < 0 or p_game_difficulty >= GameDifficulty.GAME_MAX:
-		push_warning("Difficulty %d is out of bounds" % [p_game_difficulty])
-		return
-
-	game_difficulty = p_game_difficulty
-	set_value("game_difficulty", game_difficulty)

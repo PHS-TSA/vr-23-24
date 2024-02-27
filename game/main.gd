@@ -9,7 +9,7 @@ extends PersistentStaging
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	super()
 
 	# Do not initialise if in the editor
@@ -17,9 +17,9 @@ func _ready():
 		return
 
 	# Connect events
-	scene_loaded.connect(_on_scene_loaded)
-	xr_started.connect(_on_xr_started)
-	xr_ended.connect(_on_xr_ended)
+	var _connection_err := scene_loaded.connect(_on_scene_loaded)
+	var _connection_err2 := xr_started.connect(_on_xr_started)
+	var _connection_err3 := xr_ended.connect(_on_xr_ended)
 
 
 # This method is called when a scene is loaded
