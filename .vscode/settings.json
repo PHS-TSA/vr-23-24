@@ -9,5 +9,14 @@
     "gdlintrc": "yaml"
   },
   "cSpell.words": ["elif", "onready", "spawnables", "teleporter", "tscn"],
-  "cSpell.enableFiletypes": ["gdscript"]
+  "cSpell.enableFiletypes": ["gdscript"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.godot": true
+  }
 }
